@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
+import java.util.Date;
 
 
 @Data
@@ -21,4 +22,10 @@ public class Game {
     private String genre;
     private String description;
     private String imageUrl;
+    private String platform;
+    private Date releaseDate;
+    private String developer;
+    private String publisher;
+    private Double rating;
+    private Double price;
 }
