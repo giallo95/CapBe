@@ -9,23 +9,28 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 
 @Data
-@Entity
 public class Game {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank
-    private String title;
-    private String genre;
-    private String description;
-    private String imageUrl;
-    private String platform;
-    private Date releaseDate;
-    private String developer;
-    private String publisher;
-    private Double rating;
-    private Double price;
+    private String name;
+    private Cover cover;
+    private List<Screenshot> screenshots;
+    private List<Long> genres;
+
+    public static class Cover {
+        private String image_id;
+
+
+    }
+
+    public static class Screenshot {
+        private String image_id;
+
+
+    }
+
 }
