@@ -1,67 +1,67 @@
 package app.gamelorevault.Service;
 
 
-import app.gamelorevault.Entity.Game;
-import app.gamelorevault.Entity.Genre;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
-import java.util.List;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 @Service
 public class IgdbService {
 
-    @Value("${igdb.api.url}")
-    private String apiUrl;
-
     @Value("${igdb.api.client-id}")
     private String clientId;
 
-    @Value("${igdb.api.key}")
-    private String apiKey;
+    @Value("${igdb.api.access-token}")
+    private String accessToken;
 
-    private final RestTemplate restTemplate;
+    public JsonNode fetchGames() throws Exception {
+        String url = "https://api.igdb.com/v4/games";
+        String fields = "age_ratings,aggregated_rating,aggregated_rating_count,alternative_names,artworks,bundles,category,checksum,collection,collections,cover,created_at,dlcs,expanded_games,expansions,external_games,first_release_date,follows,forks,franchise,franchises,game_engines,game_localizations,game_modes,genres,hypes,involved_companies,keywords,language_supports,multiplayer_modes,name,parent_game,platforms,player_perspectives,ports,rating,rating_count,release_dates,remakes,remasters,screenshots,similar_games,slug,standalone_expansions,status,storyline,summary,tags,themes,total_rating,total_rating_count,updated_at,url,version_parent,version_title,videos,websites;";
 
-    public IgdbService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+        HttpResponse<JsonNode> jsonResponse = Unirest.post(url)
+                .header("Client-ID", clientId)
+                .header("Authorization", "Bearer " + accessToken)
+                .header("Accept", "application/json")
+                .body("fields " + fields)
+                .asJson();
+
+        return jsonResponse.getBody();
     }
 
-    public List<Game> fetchGames() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Client-ID", clientId);
-        headers.set("Authorization", "Bearer " + apiKey);
-        HttpEntity<String> entity = new HttpEntity<>(headers);
+    public JsonNode fetchGenres() throws Exception {
+        String url = "https://api.igdb.com/v4/genres";
+        String genreFields = "checksum,created_at,name,slug,updated_at,url;";
 
-        ResponseEntity<List<Game>> response = restTemplate.exchange(
-                apiUrl + "/games",
-                HttpMethod.GET,
-                entity,
-                new ParameterizedTypeReference<List<Game>>() {}
-        );
-
-        return response.getBody();
+        HttpResponse<JsonNode> jsonResponse = Unirest.post(url)
+                .header("Client-ID", clientId)
+                .header("Authorization", "Bearer " + accessToken)
+                .header("Accept", "application/json")
+                .body("fields " + genreFields)
+                .asJson();
+        return jsonResponse.getBody();
     }
 
-    public List<Genre> fetchGenres() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Client-ID", clientId);
-        headers.set("Authorization", "Bearer " + apiKey);
-        HttpEntity<String> entity = new HttpEntity<>(headers);
+    public JsonNode fetchCovers() throws Exception {
+        HttpResponse<JsonNode> jsonResponse = Unirest.post("https://api.igdb.com/v4/covers")
+                .header("Client-ID", clientId)
+                .header("Authorization", accessToken)
+                .header("Accept", "application/json")
+                .body("fields alpha_channel,animated,checksum,game,game_localization,height,image_id,url,width;")
+                .asJson();
+        return jsonResponse.getBody();
+    }
 
-        ResponseEntity<List<Genre>> response = restTemplate.exchange(
-                apiUrl + "/genres",
-                HttpMethod.GET,
-                entity,
-                new ParameterizedTypeReference<List<Genre>>() {}
-        );
-
-        return response.getBody();
+    public JsonNode fetchScreenshots() throws Exception {
+        HttpResponse<JsonNode> jsonResponse = Unirest.post("https://api.igdb.com/v4/screenshots")
+                .header("Client-ID", clientId)
+                .header("Authorization", accessToken)
+                .header("Accept", "application/json")
+                .body("fields alpha_channel,animated,checksum,game,height,image_id,url,width;")
+                .asJson();
+        return jsonResponse.getBody();
     }
 }
