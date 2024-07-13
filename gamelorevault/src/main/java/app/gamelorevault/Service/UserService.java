@@ -23,7 +23,9 @@ public class UserService implements UserDetailsService {
     public void registerUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         System.out.println("Registering user: " + user.getUsername());
+        System.out.println("User details: " + user.toString());
         userRepository.save(user);
+        System.out.println("User registered with ID: " + user.getId());
     }
 
     public Optional<User> getUserById(Long id) {

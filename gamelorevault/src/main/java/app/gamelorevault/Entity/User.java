@@ -20,17 +20,22 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
 
-    @NotBlank
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Email
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @Column(name = "first_name")
     private String firstName;
+
+    @Column(name = "last_name")
     private String lastName;
+
+    @Column(name = "date_of_birth")
     private Date dateOfBirth;
 
     @Override
