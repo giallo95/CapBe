@@ -54,4 +54,15 @@ public class IgdbController {
     public ResponseEntity<?> getScreenshots() throws Exception {
         return ResponseEntity.ok (igdbService.fetchScreenshots().toString());
     }
+
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchGames(@RequestParam String query) {
+        try {
+            return ResponseEntity.ok(igdbService.searchGames(query).toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error searching games: " + e.getMessage());
+        }
+    }
 }
